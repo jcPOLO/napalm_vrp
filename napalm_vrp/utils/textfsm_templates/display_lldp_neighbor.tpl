@@ -1,29 +1,32 @@
 Value Required LOCAL_INTERFACE (\S+)
-Value CHASSIS_ID (.+?)
+Value REMOTE_CHASSIS_ID (.+?)
 Value MANUFACTURER_NAME (.*?)
 Value MODEL_NAME (.*?)
 Value NEIGHBOR_PORT_ID (.*?)
-Value NEIGHBOR_INTERFACE (.*?)
-Value NEIGHBOR (.+?)
-Value List SYSTEM_DESCRIPTION (.*)
-Value CAPABILITIES (.*?)
+Value REMOTE_PORT (.*?)
+Value REMOTE_SYSTEM_NAME (.+?)
+Value List REMOTE_PORT_DESCRIPTION (.*)
+Value REMOTE_SYSTEM_ENABLE_CAPAB (.*?)
 Value MANAGEMENT_IP (\S+)
 Value VLAN (\d+)
 Value SERIAL (\S+)
+Value REMOTE_SYSTEM_CAPAB (.*)
+
+
 
 Start
   ^${LOCAL_INTERFACE}\s+has\s+\d+\s+neighbors:$$
   ^\S+\s+has\s+\d+\s+neighbors
   ^Neighbor\s+index
   ^Chassis\s+type
-  ^Chassis\s+ID\s+:${CHASSIS_ID}$$
+  ^Chassis\s+ID\s+:${REMOTE_CHASSIS_ID}$$
   ^Port\s+ID\s+type
   ^Port\s+ID\s+:${NEIGHBOR_PORT_ID}\s*$$
-  ^Port\s+description\s+:${NEIGHBOR_INTERFACE}\s*$$
-  ^System\s+name\s+:${NEIGHBOR}\s*$$
-  ^System\s+description\s+:${SYSTEM_DESCRIPTION} -> SystemDescription
-  ^System\s+capabilities\s+supported
-  ^System\s+capabilities\s+enabled\s+:${CAPABILITIES}\s*$$
+  ^Port\s+description\s+:${REMOTE_PORT}\s*$$
+  ^System\s+name\s+:${REMOTE_SYSTEM_NAME}\s*$$
+  ^System\s+description\s+:${REMOTE_PORT_DESCRIPTION} -> SystemDescription
+  ^System\s+capabilities\s+supporteds+:${REMOTE_SYSTEM_CAPAB}\s*$$
+  ^System\s+capabilities\s+enabled\s+:${REMOTE_SYSTEM_ENABLE_CAPAB}\s*$$
   ^Management\s+address\s+type
   ^Management\s+address\s*:\s*${MANAGEMENT_IP}
   ^Expired\s+time
@@ -43,11 +46,11 @@ Start
   ^. -> Error
 
 SystemDescription
-  ^${SYSTEM_DESCRIPTION} -> IgnoreDescription
+  ^${REMOTE_PORT_DESCRIPTION} -> IgnoreDescription
 
 IgnoreDescription
   ^System\s+capabilities\s+supported -> Start
-  ^${SYSTEM_DESCRIPTION}
+  ^${REMOTE_PORT_DESCRIPTION}
   ^\s*$$
   ^.*$$ -> Error
 
