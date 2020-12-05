@@ -1699,7 +1699,20 @@ class VRPDriver(NetworkDriver):
               device doesnt differentiate between running and startup configuration this will an
               empty string
         """
-        raise NotImplementedError
+        # default values
+        config = {
+            'running': '',
+            'candidate': '',
+            'startup': ''
+        }
+
+        # obtain output from device - ipv6 not implemented
+        current_config_cmd = f"display current-configuration {retrieve}"
+        startup_config_cmd = "display saved-configuration"
+        config['running'] = self.device.send_command(current_config_cmd)
+        config['startup'] = self.device.send_command(startup_config_cmd)
+
+        return config
 
     def get_network_instances(self, name=""):
         """

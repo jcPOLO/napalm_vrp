@@ -3,6 +3,8 @@ name = "napalm_vrp"
 version = "0.1.2"
 description = ""
 authors = ["jcPOLO <jcpologonzalez@gmail.com>"]
+license = "Apache-2.0"
+readme = "README.rst"
 
 [tool.poetry.dependencies]
 python = "^3.6"
