@@ -1860,7 +1860,35 @@ class VRPDriver(NetworkDriver):
                 }
             }
         """
-        raise NotImplementedError
+        # Define variables
+        vlans_dict = {}
+        tag = -1
+        interfaces = []
+
+        # Regex interfaces
+        RE_QW_VLAN = r"(?P<tag>\d+)\s+\w+\s+\w+\s+\w+\s+\w+\s+(?P<name>.*)$"
+        RE_QW_INTERFACES = r"^(?P<interface>\w+/.*\d)\s+[UP|DOWN]"
+
+        # obtain output from device
+        command = "display vlan"
+        output = self.device.send_command(command)
+
+        if not output:
+            return {}
+        search_vlans = re.findall(RE_QW_VLAN, output, re.M)
+        for tag, name in search_vlans:
+            output = self.device.send_command("display vlan {} verbose".format(tag))
+            search_interfaces = re.findall(RE_QW_INTERFACES, output, re.M)
+            if len(search_interfaces) > 0:
+                for interface in search_interfaces:
+                    interfaces.append(interface)
+            vlans_dict[tag] = {
+                'name': name,
+                'interfaces': interfaces
+            }
+            interfaces = []
+        
+        return vlans_dict
 
     def compliance_report(self, validation_file=None, validation_source=None):
         """
