@@ -1883,7 +1883,7 @@ class VRPDriver(NetworkDriver):
                 for interface in search_interfaces:
                     interfaces.append(interface)
             vlans_dict[tag] = {
-                'name': name,
+                'name': name.strip(),
                 'interfaces': interfaces
             }
             interfaces = []
