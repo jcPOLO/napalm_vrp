@@ -23,6 +23,10 @@ from napalm.base.netmiko_helpers import netmiko_args
 # local modules
 import napalm.base.exceptions
 import napalm.base.helpers
+from napalm.base.helpers import (
+    textfsm_extractor,
+    transform_lldp_capab
+)
 from napalm.base import constants as c
 from napalm.base import validate
 from napalm.base.exceptions import ConnectionException
@@ -429,7 +433,6 @@ class VRPDriver(NetworkDriver):
         output = self.device.send_command(command)
 
         for line in output.splitlines():
-            print(line)
             search_lldp = re.search(RE_QW_LLDP_NEI, line)
             if search_lldp is not None:
                 interface = search_lldp.group('interface').strip()
@@ -699,7 +702,38 @@ class VRPDriver(NetworkDriver):
                 ]
             }
         """
-        raise NotImplementedError
+
+        lldp = {}
+        lldp_interfaces = []
+
+
+        if interface:
+            command = "display lldp neighbor interface {}".format(interface)
+        else:
+            command = "display lldp neighbor"
+        lldp_entries = self.device.send_command(command)
+        lldp_entries = textfsm_extractor(
+            self, "display_lldp_neighbor", lldp_entries
+        )
+
+        if len(lldp_entries) == 0:
+            return {}
+
+        for idx, lldp_entry in enumerate(lldp_entries):
+            local_intf = lldp_interfaces[idx]
+            # Add field missing on IOS
+            lldp_entry["parent_interface"] = ""
+            # Translate the capability fields
+            lldp_entry["remote_system_capab"] = transform_lldp_capab(
+                lldp_entry["remote_system_capab"]
+            )
+            lldp_entry["remote_system_enable_capab"] = transform_lldp_capab(
+                lldp_entry["remote_system_enable_capab"]
+            )
+            lldp.setdefault(local_intf, [])
+            lldp[local_intf].append(lldp_entry)
+
+        return lldp
 
     def get_bgp_config(self, group="", neighbor=""):
         """
