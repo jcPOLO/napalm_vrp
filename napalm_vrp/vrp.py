@@ -720,16 +720,15 @@ class VRPDriver(NetworkDriver):
             return {}
 
         for idx, lldp_entry in enumerate(lldp_entries):
-            local_intf = lldp_interfaces[idx]
-            # Add field missing on IOS
+            local_intf = lldp_entry[idx]
             lldp_entry["parent_interface"] = ""
             # Translate the capability fields
-            lldp_entry["remote_system_capab"] = transform_lldp_capab(
-                lldp_entry["remote_system_capab"]
-            )
-            lldp_entry["remote_system_enable_capab"] = transform_lldp_capab(
-                lldp_entry["remote_system_enable_capab"]
-            )
+            # lldp_entry["remote_system_capab"] = transform_lldp_capab(
+            #    lldp_entry["remote_system_capab"]
+            # )
+            # lldp_entry["remote_system_enable_capab"] = transform_lldp_capab(
+            #    lldp_entry["remote_system_enable_capab"]
+            # )
             lldp.setdefault(local_intf, [])
             lldp[local_intf].append(lldp_entry)
 
