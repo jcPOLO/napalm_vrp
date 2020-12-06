@@ -48,6 +48,8 @@ Supported Getters
 - get_interfaces
 - get_interfaces_ip
 - get_config
-- get_lldp_neighbors              
+- get_lldp_neighbors
+- get_lldp_neighbors_detail
+- get_vlans          
 
 wip...
