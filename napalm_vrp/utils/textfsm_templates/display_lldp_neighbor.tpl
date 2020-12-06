@@ -20,4 +20,4 @@ Start
   ^System\s+name\s+:${REMOTE_SYSTEM_NAME}\s*$$
   ^System\s+description\s+:${REMOTE_SYSTEM_DESCRIPTION}\s*$$
   ^System\s+capabilities\s+supported\s+:${REMOTE_SYSTEM_CAPAB}\s*$$
-  ^System\s+capabilities\s+enabled\s+:${REMOTE_SYSTEM_ENABLE_CAPAB}\s*$$
+  ^System\s+capabilities\s+enabled\s+:${REMOTE_SYSTEM_ENABLE_CAPAB}\s*$$ -> Record
