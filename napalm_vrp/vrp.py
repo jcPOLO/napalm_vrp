@@ -703,9 +703,7 @@ class VRPDriver(NetworkDriver):
             }
         """
 
-        lldp = {}
-        lldp_interfaces = []
-
+        lldp_dict = {}
 
         if interface:
             command = "display lldp neighbor interface {}".format(interface)
@@ -719,20 +717,16 @@ class VRPDriver(NetworkDriver):
         if len(lldp_entries) == 0:
             return {}
 
-        for idx, lldp_entry in enumerate(lldp_entries):
+        for lldp_entry in lldp_entries:
             local_intf = lldp_entry['local_interface']
             lldp_entry["parent_interface"] = ""
             # Translate the capability fields
-            # lldp_entry["remote_system_capab"] = transform_lldp_capab(
-            #    lldp_entry["remote_system_capab"]
-            # )
-            # lldp_entry["remote_system_enable_capab"] = transform_lldp_capab(
-            #    lldp_entry["remote_system_enable_capab"]
-            # )
-            lldp.setdefault(local_intf, [])
-            lldp[local_intf].append(lldp_entry)
+            lldp_entry["remote_system_capab"] = lldp_entry["remote_system_capab"].split()
+            lldp_entry["remote_system_enable_capab"] = lldp_entry["remote_system_enable_capab"].split()
+            lldp_dict.setdefault(local_intf, [])
+            lldp_dict[local_intf].append(lldp_entry)
 
-        return lldp
+        return lldp_dict
 
     def get_bgp_config(self, group="", neighbor=""):
         """
