@@ -720,7 +720,7 @@ class VRPDriver(NetworkDriver):
             return {}
 
         for idx, lldp_entry in enumerate(lldp_entries):
-            local_intf = lldp_entry[idx]
+            local_intf = lldp_entry['local_interface']
             lldp_entry["parent_interface"] = ""
             # Translate the capability fields
             # lldp_entry["remote_system_capab"] = transform_lldp_capab(
